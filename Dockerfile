@@ -1,2 +1,2 @@
-FROM emgag/varnish:5.2.1
+FROM emgag/varnish:4.1.11
 COPY default.vcl /etc/varnish/default.vcl
