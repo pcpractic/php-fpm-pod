@@ -2,11 +2,8 @@ FROM ubuntu:18.04
 
 USER root
 
-# Create a user group 'gitpod'
-RUN addgroup -S gitpod
-
-# Create a user 'gitpod' under 'gitpod' group
-RUN adduser -S -D -h /workspace/magento2gitpod gitpod gitpod
+RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 ubuntu
+WORKDIR /workspace/magento2gitpod
 
 RUN apt-get update
 RUN apt-get -y install apt-utils
