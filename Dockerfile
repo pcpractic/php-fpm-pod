@@ -88,31 +88,10 @@ RUN pecl install apcu-5.1.8 && \
 	docker-php-ext-enable apcu --ini-name docker-php-ext-10-apcu.ini && \
 	docker-php-ext-enable apc  --ini-name docker-php-ext-20-apc.ini
 
-# oracle database
-# RUN curl -o /tmp/instantclient-sdk.zip   -L https://github.com/bumpx/oracle-instantclient/raw/master/instantclient-sdk-linux.x64-12.1.0.2.0.zip && \
-#     curl -o /tmp/instantclient-basic.zip -L https://github.com/bumpx/oracle-instantclient/raw/master/instantclient-basic-linux.x64-12.1.0.2.0.zip
-# RUN unzip /tmp/instantclient-basic.zip -d /usr/local/ && \
-#     unzip /tmp/instantclient-sdk.zip -d /usr/local/ && \
-#     ln -s /usr/local/instantclient_12_1 /usr/local/instantclient && \
-#     ln -s /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so && \
-#     docker-php-ext-configure oci8 --with-oci8=instantclient,/usr/local/instantclient && \
-#     docker-php-ext-install oci8
-
 RUN apt-get update -y && apt-get install -y apt-transport-https locales gnupg
-
-# install MSSQL support and ODBC driver
-# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-# 	curl https://packages.microsoft.com/config/debian/8/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-# 	export DEBIAN_FRONTEND=noninteractive && apt-get update -y && \
-# 	ACCEPT_EULA=Y apt-get install -y msodbcsql unixodbc-dev
-# RUN set -xe \
-# 	&& pecl install pdo_sqlsrv \
-# 	&& docker-php-ext-enable pdo_sqlsrv \
-# 	&& apt-get purge -y unixodbc-dev && apt-get autoremove -y && apt-get clean
 
 # install GD
 RUN docker-php-ext-configure gd \
-	--enable-gd-native-ttf \
 	--with-png-dir=/usr/include \
 	--with-jpeg-dir=/usr/lib/x86_64-linux-gnu \
 	--with-xpm-dir=/usr/include \
@@ -124,34 +103,12 @@ RUN docker-php-ext-configure gd \
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
-#RUN pecl install stackdriver_debugger-alpha \
-#	&& echo "extension=stackdriver_debugger.so" > /usr/local/etc/php/conf.d/docker-php-ext-stackdriver_debugger.ini
-
-# install xdebug
-RUN pecl install xdebug && docker-php-ext-enable xdebug
-
 #--------------------------------------------------------------------------
 # Final Touches
 #--------------------------------------------------------------------------
 
 # install required libs for health check
 RUN apt-get -y install libfcgi0ldbl nano htop iotop lsof
-
-# install NewRelic agent
-RUN echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list && \
-	curl https://download.newrelic.com/548C16BF.gpg | apt-key add - && \
-	apt-get -y update && \
-	DEBIAN_FRONTEND=noninteractive apt-get -y install newrelic-php5 newrelic-sysmond && \
-	export NR_INSTALL_SILENT=1 && newrelic-install install
-
-# install SendGrid
-RUN echo "postfix postfix/mailname string localhost" | debconf-set-selections && \
-	echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
-	DEBIAN_FRONTEND=noninteractive apt-get install postfix libsasl2-modules -y
-
-# install shared PHP code
-# RUN git clone https://github.com/nrk/predis.git /usr/local/lib/php/predis && \
-# 	git clone https://github.com/markhilton/redis-http-cache.git /usr/local/lib/php/redis-http-cache
 
 # Set default work directory
 ADD scripts/* /usr/local/bin/
