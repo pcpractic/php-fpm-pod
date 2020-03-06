@@ -111,7 +111,6 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN apt-get -y install libfcgi0ldbl nano htop iotop lsof
 
 # Set default work directory
-ADD scripts/* /usr/local/bin/
 RUN chmod +x  /usr/local/bin/*
 
 # Health check
