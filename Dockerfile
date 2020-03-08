@@ -120,8 +120,8 @@ RUN chmod +x  /usr/local/bin/*
 RUN mkdir -p /var/log/php-fpm
 
 #Copy config files on it's place
-RUN cp php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
-RUN cp php.ini /usr/local/etc/php/
+COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY php.ini /usr/local/etc/php/
 
 # Health check
 RUN echo '#!/bin/bash' > /healthcheck && \
