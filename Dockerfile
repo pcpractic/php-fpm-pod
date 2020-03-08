@@ -116,6 +116,13 @@ RUN apt-get -y install libfcgi0ldbl nano htop iotop lsof
 # Set default work directory
 RUN chmod +x  /usr/local/bin/*
 
+#Create Log folder
+RUN mkdir -p /var/log/php-fpm
+
+#Copy config files on it's place
+RUN cp php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+RUN cp php.ini /usr/local/etc/php/
+
 # Health check
 RUN echo '#!/bin/bash' > /healthcheck && \
 	echo 'SCRIPT_NAME=/health SCRIPT_FILENAME=/health REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1' >> /healthcheck && \
